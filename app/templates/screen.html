@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Preshot/Home</title>
+{% endblock %} 
+
+
+{% block content %}
+<div class="card-list">
+    {% if screens %} 
+    {% for screen in screens %}
+    <div class="card" id={{screen.id}}>
+        <div class="banner">
+            <!---onlcick to get the link of this emplyee and send it to the API using the Id(link)-->
+            <img class="avatar" src={{screen.filename}} width="168.75" height="120">
+        </div>
+        <div class="profile-text">
+            <div class="text-box">
+                <h3>{{ screen.name }}</h3>
+            </div>
+            <div id='triangle'></div>
+        </div>
+        <a href="/log/{{screen.id}}"></a>
+    </div>
+
+
+    {% endfor %} 
+    {% else %}
+    <h2>No Screens</h2>
+    {% endif %}
+
+</div>
+
+{% endblock content %}

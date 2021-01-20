@@ -1,138 +1,74 @@
 from app import app
 from flask import Flask, request, redirect, session, send_from_directory, jsonify, render_template, make_response, url_for, abort, flash
-from flask_sqlalchemy import SQLAlchemy
 import datetime, os, secrets
 from werkzeug.utils import secure_filename
 from PIL import Image
+import pyrebase
+
+
+config = {
+    "apiKey": "AIzaSyBP0h6ejdqQKuy8SNikN-Eea4Ol8cTApM0",
+    "authDomain": "applog-ee503.firebaseapp.com",
+    "databaseURL": "https://applog-ee503.firebaseio.com",
+    "projectId": "applog-ee503",
+    "storageBucket": "applog-ee503.appspot.com",
+    "messagingSenderId": "1075416798765",
+    "appId": "1:1075416798765:web:a4dabf43fa5aaa075b0aa4",
+    "measurementId": "G-TJGVC5CZ0P"
+}
+
+ID = "applogseed@gmail.com"
+PW = "weapplog"
+
+
+firebase = pyrebase.initialize_app(config)
+# auth = firebase.auth()
+# user = auth.sign_in_with_email_and_password(ID, PW)
+db = firebase.database()
+auth = firebase.auth()
+storage = firebase.storage()
 
 UPLOAD_FOLDER = '/static/img'
-GET_FOLDER = '/static/img-get'
 PHISICAL_ROOT = os.path.dirname( os.path.abspath( __file__ ) )
 
 # app.config.from_object("config.DevelopmentConfig")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
 app.config["SECRET_KEY"] = "superSecret"
 app.config["UPLOAD_FOLDER"] = PHISICAL_ROOT + UPLOAD_FOLDER
-app.config["GET_FOLDER"] = PHISICAL_ROOT + GET_FOLDER
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
 
-#see the img folder
-#file_list = os.listdir( app.config['UPLOAD_FOLDER'] )
-
 app.debug = True
-db = SQLAlchemy(app)
-# Define Models
 
-class Student(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(80), nullable=False, unique=True)
-    name = db.Column(db.String(80), unique=True)
-    industry = db.Column(db.String(80))
-    password = db.Column(db.Integer, default=0)
-    signed_up_at = db.Column(db.DateTime())
-
-class Employee(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    filename = db.Column(db.String(255), nullable=False, unique=True, default="default.jpg")
-    link = db.Column(db.String(255), nullable=False)
-    faculty = db.Column(db.String(80), nullable=False)
-    firm = db.Column(db.String(80), nullable=False)
-    industry = db.Column(db.String(80), nullable=False)
-    position = db.Column(db.String(80), nullable=False)
-    lab = db.Column(db.String(80), nullable=False)
-    club = db.Column(db.String(80), nullable=False)
-    ask_clicks = db.Column(db.Integer)
-
-class Ask(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    student_email = db.Column(db.String(80))
-    employee_name = db.Column(db.String(80))
-    created_at = db.Column(db.DateTime())
-
-# db.drop_all()
-# db.create_all()
-#----------------------------------------------------------------
-#User login
-def allowed_image(filename):
-    if not "." in filename:
-        return False
-
-    ext = filename.rsplit(".", 1)[1]
-
-    if ext.upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]:
-        return True
+def session_verify():
+    project_name = session.get('project_name')
+    if project_name == "paypay":
+        pass
     else:
-        return False
-
-def crop_center(pil_img, crop_width, crop_height):
-    img_width, img_height = pil_img.size
-    return pil_img.crop(((img_width - crop_width) // 2,
-                         (img_height - crop_height) // 2,
-                         (img_width + crop_width) // 2,
-                         (img_height + crop_height) // 2))
-
-def crop_max_square(pil_img):
-    return crop_center(pil_img, min(pil_img.size), min(pil_img.size))
-
+        flash("現在テストユーザーしか使えません")
+        return redirect(url_for('project'))
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("project.html")
 
 
-@app.route("/register", methods=["GET", "POST"])
-def register():
+@app.route("/project", methods=["GET", "POST"])
+def project():
     if request.method == "POST":
         data = request.form
-        if data["email"] == "":
-            print("email absent")
-            return redirect(url_for('register'))
+        if data["project_name"] == "paypay":
+            session["project_name"] = data["project_name"]
+            flash("ログイン")
+            return redirect(url_for('screen'))
 
-        """
-        data = {
-            "email":"Str",
-            "password" = 6,
-        }
-        """
-        session['Email'] = data["email"]
-        print(session['Email'])
-
-        student = Student.query.filter_by(email=data["email"]).first()
-
-        if student is None:
-
-            newuser = Student(
-            email = data["email"], 
-            password = data["password"], 
-            signed_up_at=datetime.datetime.now()
-            )
-            db.session.add(newuser)
-            db.session.commit()
-            flash("登録しました")
-            #"account created"
-            return redirect(url_for('profile'))
-        
         else:
-            if student.password == data["password"]:
-                flash("ログインしました")
-                return redirect(url_for('home'))
+            flash("現在テストユーザーしか使えません")
+            return redirect(url_for('project'))
 
-            else:  
-                #"password is wrong"
-                flash("パスワードが違います")
-                return redirect(request.url)
-    return render_template("register.html")
+    return render_template("project.html")
 
-@app.route("/profile", methods=["Get", "POST"])
+@app.route("/profile", methods=["GET", "POST"])
 def profile():
-    email = session.get('Email')
-    if email is not None:
-        print(email)
-    else:
-        flash("ログインしなおしてください。")
-        return redirect(url_for('register'))
-
+    session_verify()
     student = Student.query.filter_by(email=email).first()
 
     if  request.method == "POST":
@@ -161,9 +97,9 @@ def profile():
 
     return render_template("profile.html", data = student)
 
-@app.route("/home", methods=["GET"])
-def home():
-    
+@app.route("/screen", methods=["GET"])
+def screen():
+    session_verify()
     try:        
         """
         data = {
@@ -175,33 +111,26 @@ def home():
             "club" = "Str",
         }
         """
+        data = db.child("screens").get()
+        print(data.val())
+        screens = [
+            {
+                "id": "1",
+                "filename": "hey",
+                "name": "screen1"
 
-        employees = Employee.query.all()
+            }
+        ]
 
-        #Sort with function
-        # def sort():
-        #     return employees, common
 
-        response = []
-
-        for employee in employees:
-            employee_data = {}
-            employee_data["id"] = employee.id
-            employee_data["name"] = employee.name
-            employee_data["filename"] = 'static/img-get/' + employee.filename
-            employee_data["link"] = employee.link
-            employee_data["firm"] = employee.firm
-            employee_data["industry"] = employee.industry
-            response.append(employee_data)
-        print(response)
-
-    except FileNotFoundError:
+    except ConnectionError:
         abort(404)
+        flash("なんかバグった")
 
-    return render_template("home.html", files = response)
+    return render_template("screen.html", screens = screens)
 
-@app.route("/employee/<id>", methods=["GET"])
-def employee(id):
+@app.route("/log/<id>", methods=["GET"])
+def log(id):
     
     employee_data = {}
     try:        
@@ -219,30 +148,11 @@ def employee(id):
         employee_data["club"] = employee.club
         employee_data["ask_clicks"] = employee.ask_clicks
         
-    except FileNotFoundError:
+    except ConnectionError:
         abort(404)
-        flash("バグを運営に報告してください")
+        flash("なんかバグった")
 
-    return render_template('employee.html', file=employee_data)
-
-
-# @app.route("/ask_click", methods=["GET","POST"])
-# def ask_click():
-#     data = request.get_json()
-#     email = session.get('Email')
-#     print(data["id"])
-
-#     employee = Employee.query.filter_by(name=data["id"]).first()
-#     employee.ask_clicks += 1
-#     asklog = Ask(
-#         student_email=email, 
-#         employee_name=data["id"],
-#         created_at=datetime.datetime.now())
-
-#     db.session.add(asklog)
-#     db.session.commit()
-
-#     return render_template("home.html")
+    return render_template('log.html', file=employee_data)
 
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -297,11 +207,6 @@ def upload():
             return redirect(request.url)
     return render_template("upload.html")
 
-
-@app.route('/logout')
-def logout():
-    session.pop('Email', None)
-    return redirect(url_for('register'))
 
 @app.route("/delete/<id>", methods=['POST', "GET", "DELETE"])
 def employee_delete(id):

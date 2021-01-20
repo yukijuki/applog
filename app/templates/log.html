@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="/project" method="post" novalidate>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Project name</label>
+      <input type="text" name="project_name" class="form-control" id="exampleFormControlInput1">
+      <small id="emailHelp" class="form-text text-muted">Name a project</small>
+    </div>
+    <button type="submit" class="btn btn-primary">進む</button>
+</form>
+{% endblock content %}
+
+{% block script %}
+<script>
+    function submit_entry() {
+        
+        var email = document.getElementById("email");
+        var password = document.getElementById("password");
+        var name = document.getElementById("name");
+        var industry = document.getElementById("industry");
+
+        var entry = {
+            email: email.value,
+            password: password.value,
+            name: name.value,
+            industry: industry.value
+        }
+        console.log(entry)
+
+        fetch(`${window.origin}/profile`, {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify(entry),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        }) 
+        .then(function (response) {
+
+            if (response.status != 200) {
+                console.log(`response status was not 200: ${response.status}`);
+                return ;
+            }
+
+            response.json().then(function (data) {
+                location.reload();
+                console.log(data)
+            })
+        })
+    }
+</script>
+{% endblock %}
