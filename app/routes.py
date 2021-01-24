@@ -3,7 +3,7 @@ from app import app, db, storage
 from app.function import session_verify
 from werkzeug.utils import secure_filename
 from PIL import Image
-import uuid
+import uuid, datetime, json
 
 
 @app.route("/")
@@ -72,7 +72,7 @@ def screen():
         render_all_screens = []
 
         for screen in data.each():
-            print(screen.val())
+
             render_screen = {
                 "screen_id": screen.val()["screen_id"],
                 "screen_name": screen.val()["screen_name"],
@@ -116,7 +116,7 @@ def log(id):
 def upload():
 
     if request.method == "POST":
-        print("chekc")
+        print("check")
         if request.form:
             data = request.form
             screen_id = str(uuid.uuid4())
@@ -127,11 +127,19 @@ def upload():
             image.filename = screen_id
             log = []
 
+            d = datetime.datetime.now()
+            created_at = json.dumps({"unixtime":d.timestamp()})
+            updated_at = created_at
+
+
             screen = {
+                "click_count": 0,
                 "screen_id": screen_id,
                 "project_name": project_name,
                 "screen_name": screen_name,
                 "screen_category": screen_category,
+                "created_at": created_at,
+                "updated_at": updated_at,
                 "log": [
 
                     {

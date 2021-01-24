@@ -7,3 +7,5 @@ def session_verify():
     else:
         flash("現在テストユーザーしか使えません")
         return redirect(url_for('project'))
+
+        
