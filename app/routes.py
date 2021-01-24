@@ -1,13 +1,6 @@
-from flask import request, redirect, session, send_from_directory, jsonify, render_template, make_response, url_for, abort, flash
+from flask import request, session, redirect, send_from_directory, jsonify, render_template, make_response, url_for, abort, flash
 from app import app, db
-
-def session_verify():
-    project_name = session.get('project_name')
-    if project_name == "paypay":
-        pass
-    else:
-        flash("現在テストユーザーしか使えません")
-        return redirect(url_for('project'))
+from app.function import session_verify
 
 @app.route("/")
 def index():
