@@ -114,53 +114,64 @@ def log(id):
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
 
+    """
+    "screen_id": 1,
+    "project": "paypay",
+    "screen_name": "p2phome",
+    "screen_category": "p2p",
+    "screen_image_name": "screen_image1",
+    "correspondence": []
+    "log": []
+    """
+
     if request.method == "POST":
         print("chekc")
         if request.form:
 
             data = request.form
-            image = request.files["image"]
+            print(data)
+            # image = request.files["image"]
 
-            if image.filename == "":
-                flash("Image must have a name")
-                return redirect(request.url)
+            # if image.filename == "":
+            #     flash("Image must have a name")
+            #     return redirect(request.url)
             
-            if not allowed_image(image.filename):
-                flash("PNG, JPG, JPEGを選んでください")
-                return redirect(request.url)
-            else:
-                filename = secure_filename(image.filename)
-                emp_file = Employee.query.filter_by(filename=filename).first()
-                if emp_file:
-                    flash("ファイル名を変更してください")
-                    return redirect(request.url)
+            # if not allowed_image(image.filename):
+            #     flash("PNG, JPG, JPEGを選んでください")
+            #     return redirect(request.url)
+            # else:
+            #     filename = secure_filename(image.filename)
+            #     emp_file = Employee.query.filter_by(filename=filename).first()
+            #     if emp_file:
+            #         flash("ファイル名を変更してください")
+            #         return redirect(request.url)
 
-                image.save(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
+            #     image.save(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
 
-                img = Image.open(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
-                img = crop_max_square(img)
-                img_resize_lanczos = img.resize((350, 350), Image.LANCZOS)
-                img_resize_lanczos.save(os.path.join(app.config["GET_FOLDER"], image.filename))
-                print(filename)
+            #     img = Image.open(os.path.join(app.config["UPLOAD_FOLDER"], image.filename))
+            #     img = crop_max_square(img)
+            #     img_resize_lanczos = img.resize((350, 350), Image.LANCZOS)
+            #     img_resize_lanczos.save(os.path.join(app.config["GET_FOLDER"], image.filename))
+            #     print(filename)
 
-                employee = Employee(
-                name = data["name"],
-                filename = filename,
-                link = data["link"],
-                faculty = data["faculty"],
-                firm = data["firm"],
-                industry = data["industry"],
-                position = data["position"],
-                lab = data["lab"],
-                club = data["club"],
-                ask_clicks = 0
-                )
+            #     employee = Employee(
+            #     name = data["name"],
+            #     filename = filename,
+            #     link = data["link"],
+            #     faculty = data["faculty"],
+            #     firm = data["firm"],
+            #     industry = data["industry"],
+            #     position = data["position"],
+            #     lab = data["lab"],
+            #     club = data["club"],
+            #     ask_clicks = 0
+            #     )
 
-                db.session.add(employee)
-                db.session.commit()
-                flash("Image saved")
+            #     db.session.add(employee)
+            #     db.session.commit()
+            #     flash("Image saved")
 
-            return redirect(request.url)
+            # return redirect(request.url)
     return render_template("upload.html")
 
 
