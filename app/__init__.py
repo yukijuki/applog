@@ -1,7 +1,5 @@
 from flask import Flask
 import datetime, os, secrets
-from werkzeug.utils import secure_filename
-from PIL import Image
 import pyrebase
 
 

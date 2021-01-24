@@ -1,7 +1,7 @@
 {% extends "layout.html" %} 
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sb-admin-2.css') }}">
 {% endblock %} 
 
 {% block title %}
@@ -11,17 +11,13 @@
 {% block content %}
 <div class="upload">
     <form action="/upload" method="POST" enctype="multipart/form-data">
-
-
         <div class="form-group">
             <label for="formGroupExampleInput">Firebase Screen Name</label>
             <input type="text" class="form-control" id="formGroupExampleInput" name="screen_name" placeholder="p2p_chat" required>
         </div>
-
-
         <div class="form-group">
             <label for="exampleFormControlSelect1">Screen Caetgory</label>
-            <select class="form-control" id="exampleFormControlSelect1" name="screen_category" size="1" required>
+            <select class="form-control" id="exampleFormControlSelect1" name="screen_category" required>
             <option value="カテゴリーを選択してくだい" selected>カテゴリーを選択してくだい</option>
             <option value="p2p" >p2p</option>
             <option value="home">home</option>
@@ -30,9 +26,8 @@
 
         <div class="form-group">
             <label for="exampleFormControlFile1">Upload an UI image</label>
-            <input type="file" class="form-control-file" id="exampleFormControlFile1">
+            <input type="file" class="form-control-file" id="exampleFormControlFile1" name="screen_image_name" required>
         </div>
-
 
         <button class="btn btn-primary mb-2" type="submit">送信</button>
     </form>

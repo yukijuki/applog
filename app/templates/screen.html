@@ -1,34 +1,29 @@
 {% extends "layout.html" %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sb-admin-2.css') }}">
+{% endblock %} 
+
 {% block title %}
 <title>ホーム画面</title>
 {% endblock %} 
 
 
 {% block content %}
-<div class="card-list">
-    {% if screens %} 
-    {% for screen in screens %}
-    <div class="card" id={{screen.id}}>
-        <div class="banner">
-            <!---onlcick to get the link of this emplyee and send it to the API using the Id(link)-->
-            <img class="avatar" src={{screen.filename}} width="168.75" height="120">
-        </div>
-        <div class="profile-text">
-            <div class="text-box">
-                <h3>{{ screen.name }}</h3>
-            </div>
-            <div id='triangle'></div>
-        </div>
-        <a href="/log/{{screen.id}}"></a>
-    </div>
-
-
-    {% endfor %} 
-    {% else %}
-    <h2>No Screens</h2>
-    {% endif %}
-
+{% if screens %} 
+{% for screen in screens %}
+<div class="col-sm text-center" id={{screen.screen_id}}>
+    <h3>{{ screen.screen_name }}</h3>
+    <a href="/log/{{screen.screen_id}}">
+        <img class="img-fluid" style="max-width: 50%; height: auto;" src={{screen.screen_image_name}}>
+    </a>
 </div>
+
+
+{% endfor %} 
+{% else %}
+<h2>No Screens</h2>
+{% endif %}
+
 
 {% endblock content %}
