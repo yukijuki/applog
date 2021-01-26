@@ -1,13 +1,58 @@
 {% extends "layout.html" %}
+
+{% block css %}
+{% endblock %} 
+
 {% block content %}
-<form action="/project" method="post" novalidate>
-    <div class="form-group">
-      <label for="exampleInputEmail1">Project name</label>
-      <input type="text" name="project_name" class="form-control" id="exampleFormControlInput1">
-      <small id="emailHelp" class="form-text text-muted">Name a project</small>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <div class="col-sm-4 text-left">
+        <p class="text-gray-800"></p>
+        <img style="width: 40%; height: auto;" src={{image}}>
     </div>
-    <button type="submit" class="btn btn-primary">進む</button>
-</form>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">BigQuery logs</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="font-size: 13pt; line-height: 170%;">
+                    <thead>
+                        <tr>
+                            <th>event_name</th>
+                            <th>event_category</th>
+                            <th>event_action</th>
+                            <th>firebase_screen</th>
+                            <th>event_label</th>
+                            <th>event_label2</th>
+                        </tr>
+                    </thead>
+                    {% if logs %} 
+                    {% for log in logs %}
+                    <tbody class="table table-striped">
+                        <tr>
+                            <td>{{ log.event_name }}</td>
+                            <td>{{ log.event_category }}</td>
+                            <td>{{ log.event_action }}</td>
+                            <td>{{ log.firebase_screen }}</td>
+                            <td>{{ log.event_label }}</td>
+                            <th>{{ log.event_label2 }}</th>
+                        </tr>
+                    </tbody>
+                    {% endfor %} 
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
 {% endblock content %}
 
 {% block script %}

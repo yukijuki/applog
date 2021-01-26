@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sb-admin-2.css') }}">
 {% endblock %} 
 
 {% block title %}
@@ -12,10 +11,10 @@
 {% block content %}
 {% if screens %} 
 {% for screen in screens %}
-<div class="col-sm text-center" id={{screen.screen_id}}>
-    <h3>{{ screen.screen_name }}</h3>
-    <a href="/log/{{screen.screen_id}}">
-        <img class="img-fluid" style="max-width: 50%; height: auto;" src={{screen.screen_image_name}}>
+<div class="mt-5 col-sm-4 text-left" id={{screen.screen_id}}>
+    <p class="text-gray-800">{{ screen.screen_name }}</p>
+    <a href="/screen/{{screen.screen_id}}">
+        <img style="width: 80%; height: auto;" src={{screen.screen_image_name}}>
     </a>
 </div>
 

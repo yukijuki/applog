@@ -1,4 +1,4 @@
-from flask import request, session, redirect, send_from_directory, jsonify, render_template, make_response, url_for, abort, flash
+from flask import request, session, redirect, jsonify, render_template, make_response, url_for, abort, flash
 from app import app, db, storage
 from app.function import session_verify
 from werkzeug.utils import secure_filename
@@ -26,39 +26,10 @@ def project():
 
     return render_template("project.html")
 
-# @app.route("/profile", methods=["GET", "POST"])
-# def profile():
-#     session_verify()
-#     student = Student.query.filter_by(email=email).first()
-
-#     if  request.method == "POST":
-#         data = request.get_json()
-
-#         if data["password"] == "":
-#             data["password"] = student.password
-
-#         if data["name"] == '':
-#             data["name"] = student.name
-
-#         if data["industry"] == '':
-#             data["industry"] = student.industry
-
-#         student.password = data["password"]
-#         student.name = data["name"]
-#         student.industry = data["industry"]
-#         db.session.commit()
-#         flash("変更されました。")
-
-
-#         session["Industry"] = data["industry"]
-
-#         response = make_response(jsonify(data, 200))
-#         return response
-
-#     return render_template("profile.html", data = student)
 
 @app.route("/screen", methods=["GET"])
 def screen():
+    
 
     # "screen_id": screen_id,
     # "project_name": project_name,
@@ -66,19 +37,30 @@ def screen():
     # "screen_category": screen_category,
     # "log":
 
-    session_verify()
+    #check session
+    project_name = session.get('project_name')
+    if project_name == "paypay":
+        pass
+    else:
+        flash("現在テストユーザーしか使えません")
+        return redirect(url_for('project'))
+
     try:        
         data = db.child("screen").get()
-        render_all_screens = []
+        print(data.each())
+        if data.each() is None:
+            render_all_screens = ""
 
-        for screen in data.each():
+        else:
+            render_all_screens = []
+            for screen in data.each():
 
-            render_screen = {
-                "screen_id": screen.val()["screen_id"],
-                "screen_name": screen.val()["screen_name"],
-                "screen_image_name": storage.child("image/"+screen.val()["screen_id"]).get_url(None)
-            }
-            render_all_screens.append(render_screen)
+                render_screen = {
+                    "screen_id": screen.val()["screen_id"],
+                    "screen_name": screen.val()["screen_name"],
+                    "screen_image_name": storage.child("image/"+screen.val()["screen_id"]).get_url(None)
+                }
+                render_all_screens.append(render_screen)
 
     except ConnectionError:
         abort(404)
@@ -86,34 +68,48 @@ def screen():
 
     return render_template("screen.html", screens = render_all_screens)
 
-@app.route("/log/<id>", methods=["GET"])
-def log(id):
+@app.route("/screen/<screen_id>", methods=["GET", "POST"])
+def log(screen_id):
+
+    #check session
+    project_name = session.get('project_name')
+    if project_name == "paypay":
+        pass
+    else:
+        flash("現在テストユーザーしか使えません")
+        return redirect(url_for('project'))
+
+    # check if other screen
+    if screen_id == "project":
+        return redirect(url_for('project'))
+    elif screen_id == "screen":
+        return redirect(url_for('screen'))
+    elif screen_id == "upload":
+        return redirect(url_for('upload'))
+
+    #data = request.get_json()
+    #if data["password"] == "":
+    #data["password"] = student.password
     
-    employee_data = {}
-    try:        
-        employee = Employee.query.filter_by(id=id).first()
+    data = db.child("screen/"+screen_id+"/log").get()
+    logs = data.val()
+    print(logs)
 
-        employee_data["id"] = employee.id
-        employee_data["name"] = employee.name
-        employee_data["filename"] = 'static/img-get/' + employee.filename
-        employee_data["link"] = employee.link
-        employee_data["faculty"] = employee.faculty
-        employee_data["firm"] = employee.firm
-        employee_data["industry"] = employee.industry
-        employee_data["position"] = employee.position
-        employee_data["lab"] = employee.lab
-        employee_data["club"] = employee.club
-        employee_data["ask_clicks"] = employee.ask_clicks
-        
-    except ConnectionError:
-        abort(404)
-        flash("なんかバグった")
+    image = storage.child("image/"+screen_id).get_url(None)
 
-    return render_template('log.html', file=employee_data)
+    return render_template('log.html',logs = logs, image=image)
 
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
+
+    #check session
+    project_name = session.get('project_name')
+    if project_name == "paypay":
+        pass
+    else:
+        flash("現在テストユーザーしか使えません")
+        return redirect(url_for('project'))
 
     if request.method == "POST":
         print("check")
@@ -133,7 +129,6 @@ def upload():
 
 
             screen = {
-                "click_count": 0,
                 "screen_id": screen_id,
                 "project_name": project_name,
                 "screen_name": screen_name,
@@ -158,20 +153,9 @@ def upload():
 
             db.child("screen/"+screen_id).set(screen)
             storage.child("image/"+screen_id).put(image)
-            
-            # if not allowed_image(image.filename):
-            #     flash("PNG, JPG, JPEGを選んでください")
-            #     return redirect(request.url)
-            # else:
-            #     filename = secure_filename(image.filename)
-            #     emp_file = Employee.query.filter_by(filename=filename).first()
-            #     if emp_file:
-            #         flash("ファイル名を変更してください")
-            #         return redirect(request.url)
 
             flash("新しいスクリーンが追加されました")
 
-            # render_template("upload.html") with parameter here
     return render_template("upload.html")
 
 
