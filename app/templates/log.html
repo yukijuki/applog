@@ -24,35 +24,51 @@
             <img style="width: 100%; height: auto;" src={{image}}>
         </div>
 
-        <!-- DataTales Example -->
-        <div class="table-responsive mt-5 col-sm-9">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="font-size: 10pt; line-height: 140%;">
-                <thead>
-                    <tr>
-                        <th>event_name</th>
-                        <th>event_category</th>
-                        <th>event_action</th>
-                        <th>firebase_screen</th>
-                        <th>event_label</th>
-                        <th>event_label2</th>
-                    </tr>
-                </thead>
-                {% if logs %} 
-                {% for log in logs %}
-                <tbody class="table table-striped">
-                    <tr>
-                        <td>{{ log.event_name }}</td>
-                        <td>{{ log.event_category }}</td>
-                        <td>{{ log.event_action }}</td>
-                        <td>{{ log.firebase_screen }}</td>
-                        <td>{{ log.event_label }}</td>
-                        <th>{{ log.event_label2 }}</th>
-                    </tr>
-                </tbody>
-                {% endfor %} 
-                {% endif %}
-            </table>
-        </div>
+        <!-- DataTales Example style="font-size: 10pt; line-height: 140%;"-->
+        <table class="table table-responsive mt-5 col-sm-9" style="font-size: 10pt; line-height: 140%;">
+            <thead>
+                <tr>
+                    <th scope="col">event_name</th>
+                    <th scope="col">event_category</th>
+                    <th scope="col">event_action</th>
+                    <th scope="col">firebase_screen</th>
+                    <th scope="col">event_label</th>
+                    <th scope="col">event_label2</th>
+                    <th scope="col">check</th>
+                </tr>
+            </thead>
+            {% if logs %} 
+            {% for log in logs %}
+            <tbody class="table">
+                <tr>
+                    <td>{{ log.event_name }}</td>
+                    <td>{{ log.event_category }}</td>
+                    <td>{{ log.event_action }}</td>
+                    <td>{{ log.firebase_screen }}</td>
+                    <td>{{ log.event_label }}</td>
+                    <td>{{ log.event_label2 }}</td>
+                    <td><i class="fas fa-check-square" style="font-size: 15pt; color: #4e73df;"></i></td>
+                </tr>
+            </tbody>
+            {% endfor %} 
+            {% endif %}
+            <tbody class="table">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <button class="btn" type="button" data-toggle="modal" data-target="#modal1">
+                            追加する
+                            <!-- <i class="fas fa-plus-circle" style="color: #4e73df;"></i> -->
+                        </button>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 <!-- /.container-fluid -->
@@ -63,7 +79,7 @@
 
 {% block script %}
 <script>
-    function submit_entry() {
+    function add_log() {
         
         var email = document.getElementById("email");
         var password = document.getElementById("password");
@@ -101,4 +117,10 @@
         })
     }
 </script>
+<script>
+    $('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+});
+</script>
+
 {% endblock %}
