@@ -4,8 +4,16 @@
 {% endblock %} 
 
 {% block title %}
-<title>アップロード画面</title>
+<title>Applog - Upload screen</title>
 {% endblock %} 
+
+{% block nav %}
+<div class="nav-item">
+    <a class="nav-link" href="screen">
+        <i class="fas fa-chevron-left"></i>
+    </a>
+</div>
+{% endblock %}
 
 {% block content %}
 <div class="upload">
@@ -35,52 +43,4 @@
 </div>
 {% endblock content %} {% block script %}
 
-<!-- <script>
-    function submit_entry() {
-
-        var image = document.getElementById("image");
-        var name = document.getElementById("name");
-        var link = document.getElementById("link");
-        var faculty = document.getElementById("faculty");
-        var firm = document.getElementById("firm");
-        var industry = document.getElementById("industry");
-        var position = document.getElementById("position");
-        var lab = document.getElementById("lab");
-        var club = document.getElementById("club");
-
-        var entry = {
-            image: image.value,
-            name: name.value,
-            link: link.value,
-            faculty: faculty.value,
-            firm: firm.value,
-            industry: industry.value,
-            position: position.value,
-            lab: lab.value,
-            club: club.value,
-        }
-        console.log(entry)
-
-        fetch(`${window.origin}/upload`, {
-                method: "POST",
-                credentials: "include",
-                body: JSON.stringify(entry),
-                cache: "no-cache",
-                headers: new Headers({
-                    "content-type": "application/json"
-                })
-            })
-            .then(function(response) {
-
-                if (response.status != 200) {
-                    console.log(`response status was not 200: ${response.status}`);
-                    return;
-                }
-
-                response.json().then(function(data) {
-                    console.log(data)
-                })
-            })
-    }
-</script> -->
 {% endblock %}

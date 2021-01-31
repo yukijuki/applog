@@ -3,51 +3,57 @@
 {% block css %}
 {% endblock %} 
 
+{% block title %}
+<title>Applog - Log screen</title>
+{% endblock %} 
+
+{% block nav %}
+<div class="nav-item">
+    <a class="nav-link" href="screen">
+        <i class="fas fa-chevron-left"></i>
+    </a>
+</div>
+{% endblock %}
+
 {% block content %}
 <!-- Begin Page Content -->
 <div class="container-fluid">
-    <div class="col-sm-4 text-left">
-        <p class="text-gray-800"></p>
-        <img style="width: 40%; height: auto;" src={{image}}>
-    </div>
-
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">BigQuery logs</h6>
+    <div class="row">
+        <div class="col-sm-3 text-left" style="font-size: auto;">
+            <p class="text-gray-800">sample</p>
+            <img style="width: 100%; height: auto;" src={{image}}>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="font-size: 13pt; line-height: 170%;">
-                    <thead>
-                        <tr>
-                            <th>event_name</th>
-                            <th>event_category</th>
-                            <th>event_action</th>
-                            <th>firebase_screen</th>
-                            <th>event_label</th>
-                            <th>event_label2</th>
-                        </tr>
-                    </thead>
-                    {% if logs %} 
-                    {% for log in logs %}
-                    <tbody class="table table-striped">
-                        <tr>
-                            <td>{{ log.event_name }}</td>
-                            <td>{{ log.event_category }}</td>
-                            <td>{{ log.event_action }}</td>
-                            <td>{{ log.firebase_screen }}</td>
-                            <td>{{ log.event_label }}</td>
-                            <th>{{ log.event_label2 }}</th>
-                        </tr>
-                    </tbody>
-                    {% endfor %} 
-                    {% endif %}
-                </table>
-            </div>
+
+        <!-- DataTales Example -->
+        <div class="table-responsive mt-5 col-sm-9">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="font-size: 10pt; line-height: 140%;">
+                <thead>
+                    <tr>
+                        <th>event_name</th>
+                        <th>event_category</th>
+                        <th>event_action</th>
+                        <th>firebase_screen</th>
+                        <th>event_label</th>
+                        <th>event_label2</th>
+                    </tr>
+                </thead>
+                {% if logs %} 
+                {% for log in logs %}
+                <tbody class="table table-striped">
+                    <tr>
+                        <td>{{ log.event_name }}</td>
+                        <td>{{ log.event_category }}</td>
+                        <td>{{ log.event_action }}</td>
+                        <td>{{ log.firebase_screen }}</td>
+                        <td>{{ log.event_label }}</td>
+                        <th>{{ log.event_label2 }}</th>
+                    </tr>
+                </tbody>
+                {% endfor %} 
+                {% endif %}
+            </table>
         </div>
     </div>
-
 </div>
 <!-- /.container-fluid -->
 

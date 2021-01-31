@@ -4,17 +4,29 @@
 {% endblock %} 
 
 {% block title %}
-<title>ホーム画面</title>
+<title>Applog - Home screen</title>
 {% endblock %} 
 
-
+{% block nav %}
+<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+    <div class="input-group">
+        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+            aria-label="Search" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button">
+                <i class="fas fa-search fa-sm"></i>
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}
 {% block content %}
 {% if screens %} 
 {% for screen in screens %}
-<div class="mt-5 col-sm-4 text-left" id={{screen.screen_id}}>
+<div class="mt-2 col-sm-3 text-left" id={{screen.screen_id}}>
     <p class="text-gray-800">{{ screen.screen_name }}</p>
     <a href="/screen/{{screen.screen_id}}">
-        <img style="width: 80%; height: auto;" src={{screen.screen_image_name}}>
+        <img style="width: 70%; height: auto;" src={{screen.screen_image_name}}>
     </a>
 </div>
 

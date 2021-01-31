@@ -1,4 +1,17 @@
 {% extends "layout.html" %}
+
+{% block title %}
+<title>Applog - Project screen</title>
+{% endblock %} 
+
+{% block nav %}
+<div class="nav-item">
+    <a class="nav-link" href="screen">
+        <i class="fas fa-chevron-left"></i>
+    </a>
+</div>
+{% endblock %}
+
 {% block content %}
 <form action="/project" method="post" novalidate>
     <div class="form-group">
