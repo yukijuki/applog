@@ -1,0 +1,25 @@
+.modal-content .modal-header button {
+    position: absolute;
+    right: 27px;
+    top: 30px;
+    outline: 0;
+}
+
+.modal .modal-header .close {
+    color: #5A47D1;
+    text-shadow: none;
+}
+
+.modal-header {
+    padding: .8rem 1rem;
+}
+
+.modal-header .close {
+    padding: 0rem 1rem;
+    margin: -1rem -1rem -1rem auto;
+}
+
+.modal-body{
+    padding: .6rem 1.5rem;
+}
+

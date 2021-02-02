@@ -34,7 +34,7 @@
                     <th scope="col">firebase_screen</th>
                     <th scope="col">event_label</th>
                     <th scope="col">event_label2</th>
-                    <th scope="col">check</th>
+                    <th scope="col">delete</th>
                 </tr>
             </thead>
             {% if logs %} 
@@ -59,8 +59,7 @@
                     <td></td>
                     <td>
                         <button class="btn" type="button" data-toggle="modal" data-target="#modal1">
-                            追加する
-                            <!-- <i class="fas fa-plus-circle" style="color: #4e73df;"></i> -->
+                            <i class="fas fa-plus-circle" style="color: #4e73df;"></i>
                         </button>
                     </td>
                     <td></td>
@@ -72,8 +71,93 @@
     </div>
 </div>
 <!-- /.container-fluid -->
-
+  
+<!-- Modal -->
+<div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title font-weight-bold mx-auto" id="exampleModalLabel">Log</p>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">event_name</label>
+                        <fieldset>
+                            <label class="col-form-label" for="Marketer">Screen_view</label>
+                            <input id="Marketer" class="radio-inline__input" type="radio" name="accessible-radio" value="item-1" checked="checked"/>
+                            <label class="col-form-label" for="PdM">Custom_event</label>
+                            <input id="PdM" class="radio-inline__input" type="radio" name="accessible-radio" value="item-2"/>
+                        </fieldset>
+                    </div>
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">event_category</label>
+                      <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">event_action</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">firebase_screen</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">event_label</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">event_label2</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal1" onclick="posts_post_func();">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- モーダルの設定
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title font-weight-bold mx-auto" id="exampleModalLabel">QUESTION</p>
+                <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="">
+                <div class="pt-2 pb-3">
+                    <fieldset>
+                        <input id="Marketer" class="radio-inline__input" type="radio" name="accessible-radio" value="item-1" checked="checked"/>
+                        <label class="radio-inline__label" for="Marketer">Screen_view</label>
+                        <input id="PdM" class="radio-inline__input" type="radio" name="accessible-radio" value="item-2"/>
+                        <label class="radio-inline__label" for="PdM">Custom_event</label>
+                    </fieldset>
+                </div>
+                <div class="modal-body d-block">
+                    <label for="text" class="col-form-label font-weight-bold pb-3">メールアドレス</label> 
+                    <div><input id="email" name="email" placeholder="コメントが来た際に通知を受け取る場合はemailを入力" class="input-title rounded" required="required" type="text" required></div>
+                    <label for="text" class="col-form-label font-weight-bold pt-4 pb-3">タイトル</label> 
+                    <div><input id="title" name="title" placeholder="質問のタイトルを入力" class="input-title rounded" required="required" type="text" required></div>
+                    <label for="textarea" class="col-form-label pt-4 pb-3 font-weight-bold">本文</label> 
+                    <div><textarea id="text" name="text" type="text" placeholder="質問の本文を入力..." class="input-text rounded" cols="40" rows="7.5" required></textarea></div>
+                </div>
+                <div class="pt-2 pb-5">
+                    <button type="button" class="mx-auto btn-post btn btn-group-lg bg-growth btn-block text-white" data-toggle="modal" data-target="#modal1" onclick="posts_post_func();">質問する</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> -->
+
 <!-- End of Main Content -->
 {% endblock content %}
 
@@ -118,9 +202,9 @@
     }
 </script>
 <script>
-    $('#myModal').on('shown.bs.modal', function () {
+    $('#modal1').on('shown.bs.modal', function () {
     $('#myInput').trigger('focus')
-});
+    });
 </script>
 
 {% endblock %}

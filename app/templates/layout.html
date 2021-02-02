@@ -3,59 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-wdith, initial-scale=1.0,　user-scalable=no">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     {% block css %}
     {% endblock %} 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sb-admin-2.css') }}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
     <!-- title-->
     {% block title %}{% endblock %}
 </head>
 
 <body id="page-top">
-    <!-- モーダルの設定 -->
-    <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-          <div class="modal-header">
-              <p class="modal-title font-weight-bold mx-auto" id="exampleModalLabel">QUESTION</p>
-              <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-              <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <form action="">
-              <div class="modal-body d-block">
-                  <label for="text" class="col-form-label font-weight-bold pb-3">メールアドレス</label> 
-                  <div><input id="email" name="email" placeholder="コメントが来た際に通知を受け取る場合はemailを入力" class="input-title rounded" required="required" type="text" required></div>
-                  <label for="text" class="col-form-label font-weight-bold pt-4 pb-3">タイトル</label> 
-                  <div><input id="title" name="title" placeholder="質問のタイトルを入力" class="input-title rounded" required="required" type="text" required></div>
-                  <label for="textarea" class="col-form-label pt-4 pb-3 font-weight-bold">本文</label> 
-                  <div><textarea id="text" name="text" type="text" placeholder="質問の本文を入力..." class="input-text rounded" cols="40" rows="7.5" required></textarea></div>
-              </div>
-              <div class="pt-2 pb-3">
-                  <fieldset>
-                      <input id="Marketer" class="radio-inline__input" type="radio" name="accessible-radio" value="item-1" checked="checked"/>
-                      <label class="radio-inline__label" for="Marketer">Marketer</label>
-                      <input id="PdM" class="radio-inline__input" type="radio" name="accessible-radio" value="item-2"/>
-                      <label class="radio-inline__label" for="PdM">PdM</label>
-                      <input id="Data Analyst" class="radio-inline__input" type="radio" name="accessible-radio" value="item-3"/>
-                      <label class="radio-inline__label" for="Data Analyst">Data Analyst</label>
-                      <input id="Product Designer" class="radio-inline__input" type="radio" name="accessible-radio" value="item-4"/>
-                      <label class="radio-inline__label" for="Product Designer">Product Designer</label>
-                      <input id="UX Researcher" class="radio-inline__input" type="radio" name="accessible-radio" value="item-5"/>
-                      <label class="radio-inline__label" for="UX Researcher">UX Researcher</label>
-                  </fieldset>
-              </div>
-              <div class="pt-2 pb-5">
-                  <button type="button" class="mx-auto btn-post btn btn-group-lg bg-growth btn-block text-white" data-toggle="modal" data-target="#modal1" onclick="posts_post_func();">質問する</button>
-              </div>
-          </form>
-          </div>
-      </div>
-    </div>
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
@@ -127,6 +87,8 @@
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
     {% block script %}{% endblock %}
 
     <script>
