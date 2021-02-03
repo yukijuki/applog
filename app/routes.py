@@ -90,12 +90,17 @@ def log(screen_id):
     if request.method == "POST":
         data = request.get_json()
         screen_id = data.pop("screen_id")
+        data["log_id"] = str(uuid.uuid4())
         print("screen_id", screen_id)
 
         db.child("screen/"+screen_id+"/log").push(data)
         return Response(response=json.dumps(data), status=200)
 
-    logs = dict(db.child("screen/"+screen_id+"/log").get().val()).values()
+    data = db.child("screen/"+screen_id+"/log").get().val() 
+    if data is None:
+        logs = []
+    else:
+        logs = dict(data).values()
     print(logs)
 
     image = storage.child("image/"+screen_id).get_url(None)

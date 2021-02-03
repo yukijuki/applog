@@ -34,7 +34,7 @@
                     <th scope="col">firebase_screen</th>
                     <th scope="col">event_label</th>
                     <th scope="col">event_label2</th>
-                    <th scope="col">delete</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             {% if logs %} 
@@ -47,7 +47,11 @@
                     <td>{{ log.firebase_screen }}</td>
                     <td>{{ log.event_label }}</td>
                     <td>{{ log.event_label2 }}</td>
-                    <td><i class="fas fa-check-square" style="font-size: 15pt; color: #4e73df;"></i></td>
+                    <td>
+                        <button value={{log.log_id}} type="button" onclick="delete_log(value);">
+                            <i class="fas fa-trash-alt" style="font-size: 15pt; color: #4e73df;"></i>
+                        </button>
+                    </td>
                 </tr>
             </tbody>
             {% endfor %} 
@@ -77,7 +81,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <p class="modal-title font-weight-bold mx-auto" id="exampleModalLabel">Log</p>
+                <p class="modal-title font-weight-bold mx-auto" id="exampleModalLabel">Log on this screen</p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -190,6 +194,11 @@
         console.log("Posted Succesfully");
 
     }
+
+    function delete_log(log_id) {
+        console.log(log_id)
+    }
+    
 </script>
 <script>
     $('#modal1').on('shown.bs.modal', function () {
