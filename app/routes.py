@@ -1,4 +1,4 @@
-from flask import request, session, redirect, jsonify, render_template, make_response, url_for, abort, flash
+from flask import request, session, redirect, jsonify, render_template, Response, url_for, abort, flash
 from app import app, db, storage
 from app.function import session_verify
 from werkzeug.utils import secure_filename
@@ -87,17 +87,20 @@ def log(screen_id):
     elif screen_id == "upload":
         return redirect(url_for('upload'))
 
-    #data = request.get_json()
-    #if data["password"] == "":
-    #data["password"] = student.password
-    
-    data = db.child("screen/"+screen_id+"/log").get()
-    logs = data.val()
+    if request.method == "POST":
+        data = request.get_json()
+        screen_id = data.pop("screen_id")
+        print("screen_id", screen_id)
+
+        db.child("screen/"+screen_id+"/log").push(data)
+        return Response(response=json.dumps(data), status=200)
+
+    logs = dict(db.child("screen/"+screen_id+"/log").get().val()).values()
     print(logs)
 
     image = storage.child("image/"+screen_id).get_url(None)
 
-    return render_template('log.html',logs = logs, image=image)
+    return render_template('log.html',logs = logs, image=image, screen_id=screen_id)
 
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -135,20 +138,7 @@ def upload():
                 "screen_category": screen_category,
                 "created_at": created_at,
                 "updated_at": updated_at,
-                "log": [
-
-                    {
-                        "log_id":"log_id",
-                        "event_name": "event_name",
-                        "event_category": "event_category",
-                        "firebase_screen": "firebase_screen",
-                        "event_action": "event_action",
-                        "event_label": "event_label",
-                        "event_label2": "event_label2",
-                        "location_num": "location_num"
-                    }
-
-                ]
+                "log": []
             }
 
             db.child("screen/"+screen_id).set(screen)

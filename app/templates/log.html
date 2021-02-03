@@ -83,102 +83,54 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/addlog" method="POST">
+                <form>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">event_name</label>
+                        <label for="recipient-name" class="col-form-label font-weight-bold">event_name</label>
                         <fieldset>
-                            <label class="col-form-label" for="Marketer">Screen_view</label>
-                            <input id="Marketer" class="radio-inline__input" type="radio" name="accessible-radio" value="item-1" checked="checked"/>
-                            <label class="col-form-label" for="PdM">Custom_event</label>
-                            <input id="PdM" class="radio-inline__input" type="radio" name="accessible-radio" value="item-2"/>
+                            <label class="col-form-label" for="screen_view">screen_view</label>
+                            <input id="screen_view" class="radio-inline__input" type="radio" name="accessible-radio" value="screen_view" checked="checked"/>
+                            <label class="col-form-label" for="custom_event">custom_event</label>
+                            <input id="custom_event" class="radio-inline__input" type="radio" name="accessible-radio" value="custom_event"/>
                         </fieldset>
                     </div>
                     <div class="mb-3">
-                      <label for="recipient-name" class="col-form-label">event_category</label>
-                      <input type="text" class="form-control" id="recipient-name">
+                      <label for="recipient-name" class="col-form-label font-weight-bold">event_category</label>
+                      <input type="text" id="event_category" class="form-control" placeholder="p2p">
                     </div>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">event_action</label>
-                        <input type="text" class="form-control" id="recipient-name">
+                        <label for="recipient-name" class="col-form-label font-weight-bold">event_action</label>
+                        <input type="text" class="form-control" id="event_action" placeholder="p2p_home_icon_tap">
                     </div>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">firebase_screen</label>
-                        <input type="text" class="form-control" id="recipient-name">
+                        <label for="recipient-name" class="col-form-label font-weight-bold">firebase_screen</label>
+                        <input type="text" class="form-control" id="firebase_screen" required="required" placeholder="p2p">
                     </div>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">event_label</label>
-                        <input type="text" class="form-control" id="recipient-name">
+                        <label for="recipient-name" class="col-form-label font-weight-bold">event_label</label>
+                        <input type="text" class="form-control" id="event_label" placeholder="transaction">
                     </div>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">event_label2</label>
-                        <input type="text" class="form-control" id="recipient-name">
+                        <label for="recipient-name" class="col-form-label font-weight-bold">event_label2</label>
+                        <input type="text" class="form-control" id="event_label2">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal1" onclick="posts_post_func();">Save changes</button>
+                <button value={{screen_id}} type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal1" onclick="log_post(value);">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- モーダルの設定
-<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <p class="modal-title font-weight-bold mx-auto" id="exampleModalLabel">QUESTION</p>
-                <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="">
-                <div class="pt-2 pb-3">
-                    <fieldset>
-                        <input id="Marketer" class="radio-inline__input" type="radio" name="accessible-radio" value="item-1" checked="checked"/>
-                        <label class="radio-inline__label" for="Marketer">Screen_view</label>
-                        <input id="PdM" class="radio-inline__input" type="radio" name="accessible-radio" value="item-2"/>
-                        <label class="radio-inline__label" for="PdM">Custom_event</label>
-                    </fieldset>
-                </div>
-                <div class="modal-body d-block">
-                    <label for="text" class="col-form-label font-weight-bold pb-3">メールアドレス</label> 
-                    <div><input id="email" name="email" placeholder="コメントが来た際に通知を受け取る場合はemailを入力" class="input-title rounded" required="required" type="text" required></div>
-                    <label for="text" class="col-form-label font-weight-bold pt-4 pb-3">タイトル</label> 
-                    <div><input id="title" name="title" placeholder="質問のタイトルを入力" class="input-title rounded" required="required" type="text" required></div>
-                    <label for="textarea" class="col-form-label pt-4 pb-3 font-weight-bold">本文</label> 
-                    <div><textarea id="text" name="text" type="text" placeholder="質問の本文を入力..." class="input-text rounded" cols="40" rows="7.5" required></textarea></div>
-                </div>
-                <div class="pt-2 pb-5">
-                    <button type="button" class="mx-auto btn-post btn btn-group-lg bg-growth btn-block text-white" data-toggle="modal" data-target="#modal1" onclick="posts_post_func();">質問する</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div> -->
 
 <!-- End of Main Content -->
 {% endblock content %}
 
 {% block script %}
 <script>
-    function add_log() {
-        
-        var email = document.getElementById("email");
-        var password = document.getElementById("password");
-        var name = document.getElementById("name");
-        var industry = document.getElementById("industry");
-
-        var entry = {
-            email: email.value,
-            password: password.value,
-            name: name.value,
-            industry: industry.value
-        }
-        console.log(entry)
-
-        fetch(`${window.origin}/profile`, {
+    function posts_post_api(entry) {
+        fetch(`${window.href}`, {
             method: "POST",
             credentials: "include",
             body: JSON.stringify(entry),
@@ -196,9 +148,47 @@
 
             response.json().then(function (data) {
                 location.reload();
-                console.log(data)
+                console.log("fetched data", data)
             })
         })
+    }
+
+    async function log_post(id) {
+
+        var screen_id = id;
+        const event_category = document.getElementById("event_category").value;
+        const event_action = document.getElementById("event_action").value;
+        const firebase_screen = document.getElementById("firebase_screen").value;
+        const event_label = document.getElementById("event_label").value;
+        const event_label2 = document.getElementById("event_label2").value;
+        var custom_event = document.getElementById("custom_event").checked;
+        var screen_view = document.getElementById("screen_view").checked;
+
+        var event_name;
+
+        if (custom_event == true) {
+            event_name = "custom_event"
+        } else if(screen_view == true) {
+            event_name = "screen_view"
+        } else {
+            event_name = "Unknown"
+        }
+
+        var entry = 
+            {
+                screen_id: screen_id,
+                event_name: event_name,
+                event_category: event_category,
+                event_action: event_action,
+                firebase_screen: firebase_screen,
+                event_label: event_label,
+                event_label2: event_label2
+
+            }
+
+        let response = await posts_post_api(entry)
+        console.log("Posted Succesfully");
+
     }
 </script>
 <script>
