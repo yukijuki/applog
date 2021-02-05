@@ -47,7 +47,6 @@ def screen():
 
     try:        
         data = db.child("screen").get()
-        print(data.each())
         if data.each() is None:
             render_all_screens = ""
 
@@ -90,22 +89,28 @@ def log(screen_id):
     if request.method == "POST":
         data = request.get_json()
         screen_id = data.pop("screen_id")
-        data["log_id"] = str(uuid.uuid4())
         print("screen_id", screen_id)
 
         db.child("screen/"+screen_id+"/log").push(data)
         return Response(response=json.dumps(data), status=200)
+        #redirect(request.url)
 
+    render_logs = []
     data = db.child("screen/"+screen_id+"/log").get().val() 
     if data is None:
         logs = []
     else:
-        logs = dict(data).values()
-    print(logs)
+        logs = db.child("screen/"+screen_id+"/log").get()
+
+        for log in logs.each():
+            key = log.key()
+            val = log.val()
+            val["log_id"] = key
+            render_logs.append(val)
 
     image = storage.child("image/"+screen_id).get_url(None)
 
-    return render_template('log.html',logs = logs, image=image, screen_id=screen_id)
+    return render_template('log.html',logs = render_logs, image=image, screen_id=screen_id)
 
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -154,18 +159,13 @@ def upload():
     return render_template("upload.html")
 
 
-@app.route("/delete/<id>", methods=['POST', "GET", "DELETE"])
-def employee_delete(id):
-    email = session.get('Email')
-    if email == "admin@gmail.com":
-        print(email)
-    else:
-        flash("adminに入ってください")
-        return redirect(url_for('register'))
-
-    b = Employee.query.filter_by(id=id).first()
-    db.session.delete(b)
-    db.session.commit()
-    flash("deleted")
-
-    return render_template("admin.html")
+@app.route("/delete_log", methods=['POST'])
+def delete_log():
+    if request.method == "POST":
+        data = request.get_json()
+        screen_id = data["screen_id"]
+        log_id = data["log_id"]
+        print("log_id", log_id)
+        print("screen_id", screen_id)
+        db.child("screen/"+screen_id+"/log/"+log_id).remove()
+        return Response(response=json.dumps(data), status=200)

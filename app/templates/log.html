@@ -48,7 +48,7 @@
                     <td>{{ log.event_label }}</td>
                     <td>{{ log.event_label2 }}</td>
                     <td>
-                        <button value={{log.log_id}} type="button" onclick="delete_log(value);">
+                        <button id={{screen_id}} value={{log.log_id}} type="button" onclick="delete_log(value, id);">
                             <i class="fas fa-trash-alt" style="font-size: 15pt; color: #4e73df;"></i>
                         </button>
                     </td>
@@ -195,8 +195,36 @@
 
     }
 
-    function delete_log(log_id) {
+    function delete_log(log_id, screen_id) {
+
+        var entry = 
+            {
+                log_id: log_id,
+                screen_id: screen_id
+            }
         console.log(log_id)
+
+        fetch(`${window.origin}/delete_log`, {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify(entry),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        }) 
+        .then(function (response) {
+
+            if (response.status != 200) {
+                console.log(`response status was not 200: ${response.status}`);
+                return ;
+            }
+
+            response.json().then(function (data) {
+                location.reload();
+                console.log("fetched data", data)
+            })
+        })
     }
     
 </script>
