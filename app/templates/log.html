@@ -13,10 +13,15 @@
         <i class="fas fa-chevron-left"></i>
     </a>
 </div>
+<div class="mx-auto"></div>
+<div class="mx-auto">
+    <button id={{screen_id}} type="button" class="btn btn-outline-danger" onclick="delete_screen(id);">Delete screen</button>
+</div>
 {% endblock %}
 
 {% block content %}
 <!-- Begin Page Content -->
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-3 text-left" style="font-size: auto;">
@@ -28,6 +33,7 @@
         <table class="table table-responsive mt-5 col-sm-9" style="font-size: 10pt; line-height: 140%;">
             <thead>
                 <tr>
+                    <th scope="col">id</th>
                     <th scope="col">event_name</th>
                     <th scope="col">event_category</th>
                     <th scope="col">event_action</th>
@@ -41,6 +47,7 @@
             {% for log in logs %}
             <tbody class="table">
                 <tr>
+                    <td>{{ log.log_num }}</td>
                     <td>{{ log.event_name }}</td>
                     <td>{{ log.event_category }}</td>
                     <td>{{ log.event_action }}</td>
@@ -75,7 +82,15 @@
     </div>
 </div>
 <!-- /.container-fluid -->
-  
+<div>
+{% if logs %} 
+{% for log in logs %}
+    <button class="mt-3 mf-1 btn btn-primary btn-sm" id="ball">{{ log.log_num }}</button>
+{% endfor %} 
+{% endif %}
+</div>
+
+
 <!-- Modal -->
 <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -132,102 +147,45 @@
 {% endblock content %}
 
 {% block script %}
+<script src="{{ url_for('static', filename='js/log.js') }}"></script>
 <script>
-    function posts_post_api(entry) {
-        fetch(`${window.href}`, {
-            method: "POST",
-            credentials: "include",
-            body: JSON.stringify(entry),
-            cache: "no-cache",
-            headers: new Headers({
-                "content-type": "application/json"
-            })
-        }) 
-        .then(function (response) {
+    ball.onmousedown = function(event) { // (1) 処理を開始
 
-            if (response.status != 200) {
-                console.log(`response status was not 200: ${response.status}`);
-                return ;
-            }
+        // (2) 移動のための準備: absolute にし、z-index でトップにする
+        ball.style.position = 'absolute';
+        ball.style.zIndex = 1000;
+        // 現在の親から body へ直接移動させ、body に対して相対配置をする
+        document.body.append(ball);
+        // ...そしてその絶対配置されたボールをカーソルの下に置く
 
-            response.json().then(function (data) {
-                location.reload();
-                console.log("fetched data", data)
-            })
-        })
-    }
+        moveAt(event.pageX, event.pageY);
 
-    async function log_post(id) {
-
-        var screen_id = id;
-        const event_category = document.getElementById("event_category").value;
-        const event_action = document.getElementById("event_action").value;
-        const firebase_screen = document.getElementById("firebase_screen").value;
-        const event_label = document.getElementById("event_label").value;
-        const event_label2 = document.getElementById("event_label2").value;
-        var custom_event = document.getElementById("custom_event").checked;
-        var screen_view = document.getElementById("screen_view").checked;
-
-        var event_name;
-
-        if (custom_event == true) {
-            event_name = "custom_event"
-        } else if(screen_view == true) {
-            event_name = "screen_view"
-        } else {
-            event_name = "Unknown"
+        // ボールを（pageX、pageY）座標の中心に置く
+        function moveAt(pageX, pageY) {
+        ball.style.left = pageX - ball.offsetWidth / 2 + 'px';
+        ball.style.top = pageY - ball.offsetHeight / 2 + 'px';
         }
 
-        var entry = 
-            {
-                screen_id: screen_id,
-                event_name: event_name,
-                event_category: event_category,
-                event_action: event_action,
-                firebase_screen: firebase_screen,
-                event_label: event_label,
-                event_label2: event_label2
+        function onMouseMove(event) {
+        moveAt(event.pageX, event.pageY);
+        }
 
-            }
+        // (3) mousemove でボールを移動する
+        document.addEventListener('mousemove', onMouseMove);
 
-        let response = await posts_post_api(entry)
-        console.log("Posted Succesfully");
+        // (4) ボールをドロップする。不要なハンドラを削除する
+        ball.onmouseup = function() {
+        document.removeEventListener('mousemove', onMouseMove);
+        ball.onmouseup = null;
+        };
 
-    }
+    };
 
-    function delete_log(log_id, screen_id) {
-
-        var entry = 
-            {
-                log_id: log_id,
-                screen_id: screen_id
-            }
-        console.log(log_id)
-
-        fetch(`${window.origin}/delete_log`, {
-            method: "POST",
-            credentials: "include",
-            body: JSON.stringify(entry),
-            cache: "no-cache",
-            headers: new Headers({
-                "content-type": "application/json"
-            })
-        }) 
-        .then(function (response) {
-
-            if (response.status != 200) {
-                console.log(`response status was not 200: ${response.status}`);
-                return ;
-            }
-
-            response.json().then(function (data) {
-                location.reload();
-                console.log("fetched data", data)
-            })
-        })
-    }
-    
+    ball.ondragstart = function() {
+        return false;
+};
 </script>
+
 <script>
     $('#modal1').on('shown.bs.modal', function () {
     $('#myInput').trigger('focus')
