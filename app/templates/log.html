@@ -82,14 +82,15 @@
     </div>
 </div>
 <!-- /.container-fluid -->
-<div>
+
+<!-- log cursor -->
 {% if logs %} 
 {% for log in logs %}
-    <button class="mt-3 mf-1 btn btn-primary btn-sm" id="ball">{{ log.log_num }}</button>
+<div class="drag-and-drop" style="cursor: move; position: absolute; z-index: 1000;">
+    <button class="mt-3 mf-1 btn btn-primary btn-sm" id="{{ log.log_num }}">{{ log.log_num }}</button>
+</div>
 {% endfor %} 
 {% endif %}
-</div>
-
 
 <!-- Modal -->
 <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -149,41 +150,135 @@
 {% block script %}
 <script src="{{ url_for('static', filename='js/log.js') }}"></script>
 <script>
-    ball.onmousedown = function(event) { // (1) 処理を開始
+    (function() {
 
-        // (2) 移動のための準備: absolute にし、z-index でトップにする
-        ball.style.position = 'absolute';
-        ball.style.zIndex = 1000;
-        // 現在の親から body へ直接移動させ、body に対して相対配置をする
-        document.body.append(ball);
-        // ...そしてその絶対配置されたボールをカーソルの下に置く
+        //要素の取得
+        var elements = document.getElementsByClassName("drag-and-drop");
 
-        moveAt(event.pageX, event.pageY);
+        //要素内のクリックされた位置を取得するグローバル（のような）変数
+        var x;
+        var y;
 
-        // ボールを（pageX、pageY）座標の中心に置く
-        function moveAt(pageX, pageY) {
-        ball.style.left = pageX - ball.offsetWidth / 2 + 'px';
-        ball.style.top = pageY - ball.offsetHeight / 2 + 'px';
+        //マウスが要素内で押されたとき、又はタッチされたとき発火
+        for(var i = 0; i < elements.length; i++) {
+            elements[i].addEventListener("mousedown", mdown, false);
+            elements[i].addEventListener("touchstart", mdown, false);
         }
 
-        function onMouseMove(event) {
-        moveAt(event.pageX, event.pageY);
+        //マウスが押された際の関数
+        function mdown(e) {
+
+            //クラス名に .drag を追加
+            this.classList.add("drag");
+
+            //タッチデイベントとマウスのイベントの差異を吸収
+            if(e.type === "mousedown") {
+                var event = e;
+            } else {
+                var event = e.changedTouches[0];
+            }
+
+            //要素内の相対座標を取得
+            x = event.pageX - this.offsetLeft;
+            y = event.pageY - this.offsetTop;
+
+            //ムーブイベントにコールバック
+            document.body.addEventListener("mousemove", mmove, false);
+            document.body.addEventListener("touchmove", mmove, false);
         }
 
-        // (3) mousemove でボールを移動する
-        document.addEventListener('mousemove', onMouseMove);
+        //マウスカーソルが動いたときに発火
+        function mmove(e) {
+            //ドラッグしている要素を取得
+            var drag = document.getElementsByClassName("drag")[0];
 
-        // (4) ボールをドロップする。不要なハンドラを削除する
-        ball.onmouseup = function() {
-        document.removeEventListener('mousemove', onMouseMove);
-        ball.onmouseup = null;
-        };
+            //同様にマウスとタッチの差異を吸収
+            if(e.type === "mousemove") {
+                var event = e;
+            } else {
+                var event = e.changedTouches[0];
+            }
 
-    };
+            //フリックしたときに画面を動かさないようにデフォルト動作を抑制
+            e.preventDefault();
 
-    ball.ondragstart = function() {
-        return false;
-};
+            //マウスが動いた場所に要素を動かす
+            drag.style.top = event.pageY - y + "px";
+            drag.style.left = event.pageX - x + "px";
+
+            //マウスボタンが離されたとき、またはカーソルが外れたとき発火
+            drag.addEventListener("mouseup", mup, false);
+            document.body.addEventListener("mouseleave", mup, false);
+            drag.addEventListener("touchend", mup, false);
+            document.body.addEventListener("touchleave", mup, false);
+
+        }
+
+        //マウスボタンが上がったら発火
+        function mup(e) {
+            var drag = document.getElementsByClassName("drag")[0];
+
+            //同様にマウスとタッチの差異を吸収
+            if(e.type === "mouseup") {
+                var event = e;
+            } else {
+                var event = e.changedTouches[0];
+            }
+
+            //要素内の相対座標を取得
+            x_ = event.pageX - this.offsetLeft;
+            y_ = event.pageY - this.offsetTop;
+
+            y = event.pageY - y_ + "px";
+            x = event.pageX - x_ + "px";
+
+            update_log_cursor(x,y);
+
+            //ムーブベントハンドラの消去
+            document.body.removeEventListener("mousemove", mmove, false);
+            drag.removeEventListener("mouseup", mup, false);
+            document.body.removeEventListener("touchmove", mmove, false);
+            drag.removeEventListener("touchend", mup, false);
+
+            //クラス名 .drag も消す
+            drag.classList.remove("drag");
+        }
+
+
+    })()
+
+    function update_log_cursor(x, y) {
+
+        var entry = 
+            {
+                // screen_id: screen_id,
+                // log_id: log_id,
+                x: x,
+                y: y,
+            }
+        console.log(entry)
+
+        // fetch(`${window.origin}/update_log_cursor`, {
+        //     method: "POST",
+        //     credentials: "include",
+        //     body: JSON.stringify(entry),
+        //     cache: "no-cache",
+        //     headers: new Headers({
+        //         "content-type": "application/json"
+        //     })
+        // }) 
+        // .then(function (response) {
+
+        //     if (response.status != 200) {
+        //         console.log(`response status was not 200: ${response.status}`);
+        //         return ;
+        //     }
+
+        //     response.json().then(function (data) {
+        //         console.log("fetched data", data)
+        //     })
+        // })
+    }
 </script>
 
 <script>

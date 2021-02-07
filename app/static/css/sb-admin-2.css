@@ -100,6 +100,10 @@ abbr[data-original-title] {
   text-decoration-skip-ink: none;
 }
 
+.drag {
+  z-index: 1001;
+}
+
 address {
   margin-bottom: 1rem;
   font-style: normal;

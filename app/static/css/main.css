@@ -23,3 +23,12 @@
     padding: .6rem 1.5rem;
 }
 
+.drag-and-drop {
+    cursor: move;
+    position: absolute;
+    z-index: 1000;
+}
+
+.drag {
+    z-index: 1001;
+}

@@ -184,3 +184,7 @@ def delete_screen():
         print("screen_id", screen_id)
         db.child("screen/"+screen_id).remove()
         return Response(response=json.dumps(data), status=200)
+
+@app.route("/update_log_cursor", methods=['POST'])
+def update_log_cursor():
+    pass
