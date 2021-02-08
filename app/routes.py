@@ -105,7 +105,11 @@ def log(screen_id):
             val = log.val()
             val["log_id"] = key
 
+            if "log_cursor" not in val:
+                val["log_cursor"] = {"x": 430, "y": 150}
+
             render_logs.append(val)
+            print(val)
 
     image = storage.child("image/"+screen_id).get_url(None)
 
@@ -187,4 +191,17 @@ def delete_screen():
 
 @app.route("/update_log_cursor", methods=['POST'])
 def update_log_cursor():
-    pass
+    if request.method == "POST":
+        data = request.get_json()
+        screen_id = data["screen_id"]
+        log_id = data["log_id"]
+        x = data["x"]
+        y = data["y"]
+
+        log_cursor = {
+            "x": x,
+            "y": y
+        }
+
+        db.child("screen/"+screen_id+"/log/"+log_id+"/log_cursor").set(log_cursor)
+        return Response(response=json.dumps(log_cursor), status=200)

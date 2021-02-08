@@ -55,7 +55,7 @@
                     <td>{{ log.event_label }}</td>
                     <td>{{ log.event_label2 }}</td>
                     <td>
-                        <button id={{screen_id}} value={{log.log_id}} type="button" onclick="delete_log(value, id);">
+                        <button id="{{screen_id}}" value="{{log.log_id}}" type="button" onclick="delete_log(value, id);">
                             <i class="fas fa-trash-alt" style="font-size: 15pt; color: #4e73df;"></i>
                         </button>
                     </td>
@@ -86,8 +86,8 @@
 <!-- log cursor -->
 {% if logs %} 
 {% for log in logs %}
-<div class="drag-and-drop" style="cursor: move; position: absolute; z-index: 1000;">
-    <button class="mt-3 mf-1 btn btn-primary btn-sm" id="{{ log.log_num }}">{{ log.log_num }}</button>
+<div class="drag-and-drop" style="cursor: move; position: absolute; opacity:0.7; z-index: 1000; top:{{ log.log_cursor.y }}; left:{{ log.log_cursor.x }};" value="{{ log.log_num }}">
+    <button id="{{ log.log_num }}" value="{{log.log_id}}" class="mt-3 mf-1 btn btn-dark btn-sm">{{ log.log_num }}</button>
 </div>
 {% endfor %} 
 {% endif %}
@@ -137,7 +137,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">Close</button>
-                <button value={{screen_id}} type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal1" onclick="log_post(value);">Save changes</button>
+                <button id="log_post_button" value={{screen_id}} type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal1" onclick="log_post(value);">Save changes</button>
             </div>
         </div>
     </div>
@@ -232,7 +232,9 @@
             y = event.pageY - y_ + "px";
             x = event.pageX - x_ + "px";
 
-            update_log_cursor(x,y);
+            console.log("event", event.target.id)
+
+            update_log_cursor(x,y, event.target.id, event.target.value);
 
             //ムーブベントハンドラの消去
             document.body.removeEventListener("mousemove", mmove, false);
@@ -247,37 +249,38 @@
 
     })()
 
-    function update_log_cursor(x, y) {
+    function update_log_cursor(x, y, log_num, log_id) {
 
+        var screen_id = document.getElementById("log_post_button").value
         var entry = 
             {
-                // screen_id: screen_id,
-                // log_id: log_id,
+                screen_id: screen_id,
+                log_id: log_id,
                 x: x,
                 y: y,
             }
         console.log(entry)
 
-        // fetch(`${window.origin}/update_log_cursor`, {
-        //     method: "POST",
-        //     credentials: "include",
-        //     body: JSON.stringify(entry),
-        //     cache: "no-cache",
-        //     headers: new Headers({
-        //         "content-type": "application/json"
-        //     })
-        // }) 
-        // .then(function (response) {
+        fetch(`${window.origin}/update_log_cursor`, {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify(entry),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        }) 
+        .then(function (response) {
 
-        //     if (response.status != 200) {
-        //         console.log(`response status was not 200: ${response.status}`);
-        //         return ;
-        //     }
+            if (response.status != 200) {
+                console.log(`response status was not 200: ${response.status}`);
+                return ;
+            }
 
-        //     response.json().then(function (data) {
-        //         console.log("fetched data", data)
-        //     })
-        // })
+            response.json().then(function (data) {
+                console.log("fetched data", data)
+            })
+        })
     }
 </script>
 
