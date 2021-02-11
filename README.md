@@ -14,4 +14,6 @@ https://github.com/thisbejim/Pyrebase
 
 gmail
 applogseed@gmail.com
-weapplog
+
+region
+asia-east2
