@@ -5,6 +5,9 @@ from werkzeug.utils import secure_filename
 from PIL import Image
 import uuid, datetime, json
 
+beta_project = [
+    "paypay", "p2p", "prodops", "teppei", "o-24", "sample1", "sample2"
+]
 
 @app.route("/")
 def index():
@@ -13,9 +16,12 @@ def index():
 
 @app.route("/project", methods=["GET", "POST"])
 def project():
+
+    session.pop('project_name', None)
+
     if request.method == "POST":
         data = request.form
-        if data["project_name"] == "paypay":
+        if data["project_name"] in beta_project:
             session["project_name"] = data["project_name"]
             flash("ログイン")
             return redirect(url_for('screen'))
@@ -32,16 +38,16 @@ def screen():
 
     #check session
     project_name = session.get('project_name')
-    if project_name == "paypay":
+    if project_name in beta_project:
         pass
     else:
         flash("現在テストユーザーしか使えません")
         return redirect(url_for('project'))
 
     try:        
-        data = db.child("screen").get()
+        data = db.child(project_name).get()
         if data.each() is None:
-            render_all_screens = ""
+            render_all_screen_sorted = ""
 
         else:
             render_all_screens = []
@@ -67,7 +73,7 @@ def log(screen_id):
 
     #check session
     project_name = session.get('project_name')
-    if project_name == "paypay":
+    if project_name in beta_project:
         pass
     else:
         flash("現在テストユーザーしか使えません")
@@ -89,16 +95,16 @@ def log(screen_id):
         d = datetime.datetime.now()
         data["created_at"] = json.dumps({"unixtime":d.timestamp()})
 
-        db.child("screen/"+screen_id+"/log").push(data)
+        db.child(project_name+"/"+screen_id+"/log").push(data)
         return Response(response=json.dumps(data), status=200)
         #redirect(request.url)
 
     render_logs = []
-    data = db.child("screen/"+screen_id+"/log").get().val() 
+    data = db.child(project_name+"/"+screen_id+"/log").get().val() 
     if data is None:
         logs = []
     else:
-        logs = db.child("screen/"+screen_id+"/log").get()
+        logs = db.child(project_name+"/"+screen_id+"/log").get()
         
         for log in logs.each():
             key = log.key()
@@ -130,7 +136,8 @@ def upload():
 
     #check session
     project_name = session.get('project_name')
-    if project_name == "paypay":
+    print("project_name", project_name)
+    if project_name in beta_project:
         pass
     else:
         flash("現在テストユーザーしか使えません")
@@ -141,7 +148,6 @@ def upload():
         if request.form:
             data = request.form
             screen_id = str(uuid.uuid4())
-            project_name = "paypay"
             screen_name = data["screen_name"]
             screen_category = data["screen_category"]
             image = request.files["screen_image_name"]
@@ -161,7 +167,7 @@ def upload():
                 "log": []
             }
 
-            db.child("screen/"+screen_id).set(screen)
+            db.child(project_name+"/"+screen_id).set(screen)
             storage.child("image/"+screen_id).put(image)
 
             flash("新しいスクリーンが追加されました")
@@ -172,26 +178,29 @@ def upload():
 @app.route("/delete_log", methods=['POST'])
 def delete_log():
     if request.method == "POST":
+        project_name = session.get('project_name')
         data = request.get_json()
         screen_id = data["screen_id"]
         log_id = data["log_id"]
         print("log_id", log_id)
         print("screen_id", screen_id)
-        db.child("screen/"+screen_id+"/log/"+log_id).remove()
+        db.child(project_name+"/"+screen_id+"/log/"+log_id).remove()
         return Response(response=json.dumps(data), status=200)
 
 @app.route("/delete_screen", methods=['POST'])
 def delete_screen():
     if request.method == "POST":
+        project_name = session.get('project_name')
         data = request.get_json()
         screen_id = data["screen_id"]
         print("screen_id", screen_id)
-        db.child("screen/"+screen_id).remove()
+        db.child(project_name+"/"+screen_id).remove()
         return Response(response=json.dumps(data), status=200)
 
 @app.route("/update_log_cursor", methods=['POST'])
 def update_log_cursor():
     if request.method == "POST":
+        project_name = session.get('project_name')
         data = request.get_json()
         screen_id = data["screen_id"]
         log_id = data["log_id"]
@@ -203,5 +212,5 @@ def update_log_cursor():
             "y": y
         }
 
-        db.child("screen/"+screen_id+"/log/"+log_id+"/log_cursor").set(log_cursor)
+        db.child(project_name+"/"+screen_id+"/log/"+log_id+"/log_cursor").set(log_cursor)
         return Response(response=json.dumps(log_cursor), status=200)

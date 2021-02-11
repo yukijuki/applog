@@ -73,7 +73,7 @@
               {% for message in get_flashed_messages() %}
               <div class="alert text-center">{{ message }}</div>
               {% endfor %}
-              <main role="main" class="container">
+              <main role="main" class="container-fluid" style="padding-left: 4rem; padding-right: 3rem;">
                 <div class="row">
                     {% block content %}{% endblock %}
                 </div>  
