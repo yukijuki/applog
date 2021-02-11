@@ -1,0 +1,5 @@
+runtime: python37 # or python37 for Python 3.7
+
+
+env_variables:
+  BUCKET_NAME: "env"
