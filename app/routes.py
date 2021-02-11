@@ -90,7 +90,6 @@ def log(screen_id):
     if request.method == "POST":
         data = request.get_json()
         screen_id = data.pop("screen_id")
-        print("screen_id", screen_id)
 
         d = datetime.datetime.now()
         data["created_at"] = json.dumps({"unixtime":d.timestamp()})
@@ -115,7 +114,6 @@ def log(screen_id):
                 val["log_cursor"] = {"x": 430, "y": 150}
 
             render_logs.append(val)
-            print(val)
 
     image = storage.child("image/"+screen_id).get_url(None)
 
@@ -127,8 +125,12 @@ def log(screen_id):
         count = count + 1
         log["log_num"] = count
         render_logs_sorted_with_id.append(log)
+    
+    #get screen name and add it to the log
+    screen_data = db.child(project_name+"/"+screen_id).get().val() 
+    screen_name = screen_data["screen_name"]
 
-    return render_template('log.html',logs = render_logs_sorted_with_id, image=image, screen_id=screen_id)
+    return render_template('log.html',logs = render_logs_sorted_with_id, image=image, screen_id=screen_id, screen_name=screen_name)
 
 
 @app.route("/upload", methods=["GET", "POST"])
@@ -160,7 +162,6 @@ def upload():
 
             screen = {
                 "screen_id": screen_id,
-                "project_name": project_name,
                 "screen_name": screen_name,
                 "screen_category": screen_category,
                 "created_at": created_at,
