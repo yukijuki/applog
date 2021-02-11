@@ -17,3 +17,8 @@ applogseed@gmail.com
 
 region
 asia-east2
+
+cmd
+gcloud app deploy app.yaml
+gcloud app browse
+gcloud app logs tail -s default
