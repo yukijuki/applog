@@ -71,13 +71,10 @@ def screen():
 @app.route("/screen/<screen_id>", methods=["GET", "POST"])
 def log(screen_id):
 
-    #check session
+    #no check session
     project_name = session.get('project_name')
-    if project_name in beta_project:
-        pass
-    else:
-        flash("現在テストユーザーしか使えません")
-        return redirect(url_for('project'))
+    if project_name is None:
+        return redirect(url_for('signin', screen_id=screen_id))
 
     # check if other screen
     if screen_id == "project":
@@ -128,6 +125,10 @@ def log(screen_id):
     
     #get screen name and add it to the log
     screen_data = db.child(project_name+"/"+screen_id).get().val() 
+    if screen_data is None:
+        flash("You jumped into a different project please sign in again")
+        session.pop('project_name', None)
+        return redirect(url_for('project'))
     screen_name = screen_data["screen_name"]
 
     return render_template('log.html',logs = render_logs_sorted_with_id, image=image, screen_id=screen_id, screen_name=screen_name)
@@ -174,6 +175,25 @@ def upload():
             flash("新しいスクリーンが追加されました")
 
     return render_template("upload.html")
+
+@app.route("/signin/<screen_id>", methods=["GET", "POST"])
+def signin(screen_id):
+    if request.method == "GET":
+        flash("Put your project name")
+    if request.method == "POST":
+        data = request.form
+        if data["project_name"] in beta_project:
+            session["project_name"] = data["project_name"]
+            flash("ログイン")
+            print("test", screen_id)
+            return redirect(url_for('log', screen_id=screen_id))
+
+        else:
+            flash("現在テストユーザーしか使えません")
+            return redirect(url_for('project'))
+    
+    return render_template("signin.html", screen_id=screen_id)
+
 
 
 @app.route("/delete_log", methods=['POST'])

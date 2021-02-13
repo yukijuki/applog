@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<title>Applog - Project screen</title>
+{% endblock %} 
+
+{% block nav %}
+<div class="nav-item">
+    <a class="nav-link" href="screen">
+        <i class="fas fa-chevron-left"></i>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<form action="/signin/{{ screen_id }}" method="post" novalidate>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Project name</label>
+      <input type="text" name="project_name" class="form-control" id="exampleFormControlInput1">
+      <small id="emailHelp" class="form-text text-muted">Name a project</small>
+    </div>
+    <button type="submit" class="btn btn-primary">進む</button>
+</form>
+{% endblock content %}
