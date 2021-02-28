@@ -13,12 +13,13 @@
 {% endblock %}
 
 {% block content %}
-<form action="/project" method="post" novalidate>
+<form action="/project" method="post">
     <div class="form-group">
-      <label for="exampleInputEmail1">Project name</label>
-      <input type="text" name="project_name" class="form-control" id="exampleFormControlInput1">
-      <small id="emailHelp" class="form-text text-muted">Name a project</small>
+        <label for="exampleInputEmail1">Project name</label>
+        <input type="text" name="project_name" class="form-control" id="exampleFormControlInput1" required>
+        <label for="exampleInputEmail1">Password</label>
+        <input type="password" name="password" class="form-control" id="exampleFormControlInput1" required>
     </div>
-    <button type="submit" class="btn btn-primary">進む</button>
+    <button type="submit" class="btn btn-primary">Sign in</button>
 </form>
 {% endblock content %}

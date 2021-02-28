@@ -4,10 +4,14 @@ from app.function import session_verify
 from werkzeug.utils import secure_filename
 from PIL import Image
 import uuid, datetime, json
+import re
+
 
 beta_project = [
     "paypay", "p2p", "prodops", "teppei", "o-24", "sample1", "sample2"
 ]
+
+password = "Paypay01"
 
 @app.route("/")
 def index():
@@ -21,13 +25,13 @@ def project():
 
     if request.method == "POST":
         data = request.form
-        if data["project_name"] in beta_project:
+        if data["project_name"] in beta_project and data["password"] == password:
             session["project_name"] = data["project_name"]
-            flash("ログイン")
+            flash("Logged in ")
             return redirect(url_for('screen'))
 
         else:
-            flash("現在テストユーザーしか使えません")
+            flash("Only available for beta users")
             return redirect(url_for('project'))
 
     return render_template("project.html")
@@ -43,28 +47,57 @@ def screen():
     else:
         flash("現在テストユーザーしか使えません")
         return redirect(url_for('project'))
+    
+    searchbar = request.args.get('searchbar', '')
 
-    try:        
-        data = db.child(project_name).get()
-        if data.each() is None:
-            render_all_screen_sorted = ""
+    if searchbar == "":
+        try:        
+            data = db.child(project_name).get()
+            if data.each() is None:
+                render_all_screen_sorted = ""
 
-        else:
-            render_all_screens = []
-            for screen in data.each():
-                render_screen = {
-                    "screen_id": screen.val()["screen_id"],
-                    "screen_name": screen.val()["screen_name"],
-                    "created_at": screen.val()["created_at"],
-                    "screen_image_name": storage.child("image/"+screen.val()["screen_id"]).get_url(None)
-                }
-                render_all_screens.append(render_screen)
-            
-            render_all_screen_sorted = sorted(render_all_screens, key=lambda x:x['created_at'], reverse=True)
+            else:
+                render_all_screens = []
+                for screen in data.each():
+                    render_screen = {
+                        "screen_id": screen.val()["screen_id"],
+                        "screen_name": screen.val()["screen_name"],
+                        "created_at": screen.val()["created_at"],
+                        "screen_image_name": storage.child("image/"+screen.val()["screen_id"]).get_url(None)
+                    }
+                    render_all_screens.append(render_screen)
+                
+                render_all_screen_sorted = sorted(render_all_screens, key=lambda x:x['created_at'], reverse=True)
 
-    except ConnectionError:
-        abort(404)
-        flash("なんかバグった")
+        except ConnectionError:
+            abort(404)
+            flash("Unexpected error contact Yuki")
+    else:
+        print(searchbar)
+        try:        
+            data = db.child(project_name).get()
+            if data.each() is None:
+                render_all_screen_sorted = ""
+
+            else:
+                render_all_screens = []
+                for screen in data.each():
+                    if re.search(searchbar, screen.val()["screen_name"], re.IGNORECASE):
+                        print("screen_name", screen.val()["screen_name"])
+                        render_screen = {
+                            "screen_id": screen.val()["screen_id"],
+                            "screen_name": screen.val()["screen_name"],
+                            "created_at": screen.val()["created_at"],
+                            "screen_image_name": storage.child("image/"+screen.val()["screen_id"]).get_url(None)
+                        }
+                        render_all_screens.append(render_screen)
+                    
+                render_all_screen_sorted = sorted(render_all_screens, key=lambda x:x['created_at'], reverse=True)
+
+        except ConnectionError:
+            abort(404)
+            flash("Unexpected error contact Yuki")
+        
 
     return render_template("screen.html", screens = render_all_screen_sorted)
 
@@ -179,17 +212,17 @@ def upload():
 @app.route("/signin/<screen_id>", methods=["GET", "POST"])
 def signin(screen_id):
     if request.method == "GET":
-        flash("Put your project name")
+        flash("Project name to sign in")
     if request.method == "POST":
         data = request.form
-        if data["project_name"] in beta_project:
+        if data["project_name"] in beta_project and data["password"] == password:
             session["project_name"] = data["project_name"]
-            flash("ログイン")
+            flash("Log in")
             print("test", screen_id)
             return redirect(url_for('log', screen_id=screen_id))
 
         else:
-            flash("現在テストユーザーしか使えません")
+            flash("Only available for beta users")
             return redirect(url_for('project'))
     
     return render_template("signin.html", screen_id=screen_id)
