@@ -83,7 +83,6 @@ def screen():
                 render_all_screens = []
                 for screen in data.each():
                     if re.search(searchbar, screen.val()["screen_name"], re.IGNORECASE):
-                        print("screen_name", screen.val()["screen_name"])
                         render_screen = {
                             "screen_id": screen.val()["screen_id"],
                             "screen_name": screen.val()["screen_name"],
