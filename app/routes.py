@@ -25,14 +25,9 @@ def project():
 
     if request.method == "POST":
         data = request.form
-        if data["project_name"] in beta_project and data["password"] == password:
-            session["project_name"] = data["project_name"]
-            flash("Logged in ")
-            return redirect(url_for('screen'))
-
-        else:
-            flash("Only available for beta users")
-            return redirect(url_for('project'))
+        session["project_name"] = data["project_name"]
+        flash("ログインしました")
+        return redirect(url_for('screen'))
 
     return render_template("project.html")
 
@@ -42,11 +37,11 @@ def screen():
 
     #check session
     project_name = session.get('project_name')
-    if project_name in beta_project:
-        pass
-    else:
-        flash("現在テストユーザーしか使えません")
-        return redirect(url_for('project'))
+    # if project_name in beta_project:
+    #     pass
+    # else:
+    #     flash("現在テストユーザーしか使えません")
+    #     return redirect(url_for('project'))
     
     searchbar = request.args.get('searchbar', '')
 
@@ -71,7 +66,7 @@ def screen():
 
         except ConnectionError:
             abort(404)
-            flash("Unexpected error contact Yuki")
+            flash("Unexpected error contact applogseed@gmail.com")
     else:
         print(searchbar)
         try:        
@@ -95,7 +90,7 @@ def screen():
 
         except ConnectionError:
             abort(404)
-            flash("Unexpected error contact Yuki")
+            flash("Unexpected error contact applogseed@gmail.com")
         
 
     return render_template("screen.html", screens = render_all_screen_sorted)
@@ -158,7 +153,7 @@ def log(screen_id):
     #get screen name and add it to the log
     screen_data = db.child(project_name+"/"+screen_id).get().val() 
     if screen_data is None:
-        flash("You jumped into a different project please sign in again")
+        flash("違う人のプロジェクトに入ってしまったのでキックアウトします")
         session.pop('project_name', None)
         return redirect(url_for('project'))
     screen_name = screen_data["screen_name"]
@@ -172,11 +167,6 @@ def upload():
     #check session
     project_name = session.get('project_name')
     print("project_name", project_name)
-    if project_name in beta_project:
-        pass
-    else:
-        flash("現在テストユーザーしか使えません")
-        return redirect(url_for('project'))
 
     if request.method == "POST":
         print("check")
@@ -184,7 +174,7 @@ def upload():
             data = request.form
             screen_id = str(uuid.uuid4())
             screen_name = data["screen_name"]
-            screen_category = data["screen_category"]
+            #screen_category = data["screen_category"]
             image = request.files["screen_image_name"]
             image.filename = screen_id
             log = []
@@ -196,7 +186,7 @@ def upload():
             screen = {
                 "screen_id": screen_id,
                 "screen_name": screen_name,
-                "screen_category": screen_category,
+                # "screen_category": screen_category,
                 "created_at": created_at,
                 "log": []
             }
@@ -205,24 +195,20 @@ def upload():
             storage.child("image/"+screen_id).put(image)
 
             flash("新しいスクリーンが追加されました")
+            return redirect(url_for('screen'))
 
     return render_template("upload.html")
 
 @app.route("/signin/<screen_id>", methods=["GET", "POST"])
 def signin(screen_id):
     if request.method == "GET":
-        flash("Project name to sign in")
+        flash("プロジェクト名を入力してください")
     if request.method == "POST":
         data = request.form
-        if data["project_name"] in beta_project and data["password"] == password:
-            session["project_name"] = data["project_name"]
-            flash("Log in")
-            print("test", screen_id)
-            return redirect(url_for('log', screen_id=screen_id))
-
-        else:
-            flash("Only available for beta users")
-            return redirect(url_for('project'))
+        session["project_name"] = data["project_name"]
+        flash("ログインしました")
+        print("test", screen_id)
+        return redirect(url_for('log', screen_id=screen_id))
     
     return render_template("signin.html", screen_id=screen_id)
 

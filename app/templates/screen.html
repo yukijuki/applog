@@ -11,7 +11,7 @@
 <div class="mx-auto">
     <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="/screen" method="get">
         <div class="input-group">
-            <input type="text" name="searchbar" class="form-control bg-light border-0 small" placeholder="Screen name ..."
+            <input type="text" name="searchbar" class="form-control bg-light border-0 small" placeholder="画面名を入力 ..."
                 aria-label="Search" aria-describedby="basic-addon2" required>
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit" id="searchbar">
@@ -35,7 +35,15 @@
 
 {% endfor %} 
 {% else %}
-<h2>No Screens</h2>
+<div>
+    <h2>画面を追加してください</h2>
+    <br>
+    <div class="mt-2 col-sm-9 text-left">
+        <a href="upload">
+            <button type="submit" class="btn btn-primary">画面を投稿する</button>
+        </a>
+    </div>
+</div>
 {% endif %}
 
 

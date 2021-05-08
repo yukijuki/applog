@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-<title>Applog - Project screen</title>
+<title>AppLog - プロジェクト再入力画面</title>
 {% endblock %} 
 
 {% block nav %}
@@ -15,10 +15,8 @@
 {% block content %}
 <form action="/signin/{{ screen_id }}" method="post">
     <div class="form-group">
-        <label for="exampleInputEmail1">Project name</label>
+        <label for="exampleInputEmail1">プロジェクト名を入力</label>
         <input type="text" name="project_name" class="form-control" id="exampleFormControlInput1" required>
-        <label for="exampleInputEmail1">Password</label>
-        <input type="password" name="password" class="form-control" id="exampleFormControlInput1" required>
     </div>
     <button type="submit" class="btn btn-primary">進む</button>
 </form>

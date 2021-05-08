@@ -15,7 +15,7 @@
 </div>
 <div class="mx-auto"></div>
 <div class="mx-auto">
-    <button id={{screen_id}} type="button" class="btn btn-outline-danger" onclick="delete_screen(id);">Delete screen</button>
+    <button id={{screen_id}} type="button" class="btn btn-outline-danger" onclick="delete_screen(id);">画面を削除</button>
 </div>
 {% endblock %}
 
@@ -36,10 +36,10 @@
                 <th scope="col">event_name</th>
                 <th scope="col">event_category</th>
                 <th scope="col">event_action</th>
-                <th scope="col">firebase_screen</th>
+                <th scope="col">screen_name</th>
                 <th scope="col">event_label</th>
                 <th scope="col">event_label2</th>
-                <th scope="col"></th>
+                <th scope="col">ログを削除</th>
             </tr>
         </thead>
         {% if logs %} 
@@ -69,7 +69,7 @@
                 <td></td>
                 <td>
                     <button class="btn" type="button" data-toggle="modal" data-target="#modal1">
-                        <i class="fas fa-plus-circle" style="color: #4e73df;"></i>
+                        <i class="fas fa-plus-circle" style="color: #4e73df;"></i> ログを追加
                     </button>
                 </td>
                 <td></td>
@@ -120,7 +120,7 @@
                         <input type="text" class="form-control" id="event_action" placeholder="p2p_home_icon_tap">
                     </div>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label font-weight-bold">firebase_screen</label>
+                        <label for="recipient-name" class="col-form-label font-weight-bold">screen_name</label>
                         <input type="text" class="form-control" id="firebase_screen" required="required" placeholder="p2p">
                     </div>
                     <div class="mb-3">
