@@ -37,6 +37,9 @@ def screen():
 
     #check session
     project_name = session.get('project_name')
+    if project_name is None:
+        flash("ログインしなおしてください")
+        return redirect(url_for('project'))
     # if project_name in beta_project:
     #     pass
     # else:
@@ -166,6 +169,9 @@ def upload():
 
     #check session
     project_name = session.get('project_name')
+    if project_name is None:
+        flash("ログインしなおしてください")
+        return redirect(url_for('project'))
     print("project_name", project_name)
 
     if request.method == "POST":
